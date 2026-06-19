@@ -2,10 +2,12 @@
 
 import { Header } from '@/components/navigation/Header'
 import { BottomNav } from '@/components/navigation/BottomNav'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
-import { History } from 'lucide-react'
+import { FastHistoryList } from '@/components/fast/FastHistoryList'
+import { useFastHistory } from '@/hooks/useFastHistory'
 
 export default function HistoryPage() {
+  const { fasts, loading, error } = useFastHistory()
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -16,17 +18,19 @@ export default function HistoryPage() {
           <p className="mt-2 text-gray-600">View your fasting history and statistics</p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <History className="w-6 h-6" />
-              Coming Soon
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-600">Fast history features will be implemented in Phase 2</p>
-          </CardContent>
-        </Card>
+        {loading && (
+          <div className="text-center py-12">
+            <p className="text-gray-600">Loading your fasting history...</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <p className="text-red-800">Error loading history: {error}</p>
+          </div>
+        )}
+
+        {!loading && !error && <FastHistoryList fasts={fasts} />}
       </main>
 
       <BottomNav />
