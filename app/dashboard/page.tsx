@@ -9,9 +9,11 @@ import { BottomNav } from '@/components/navigation/BottomNav'
 import { Timer, Scale, TrendingDown, Award, Target, Flame } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { DashboardStats } from '@/types'
+import { useWeight } from '@/hooks/useWeight'
 
 export default function DashboardPage() {
   const router = useRouter()
+  const { weightEntries } = useWeight()
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState<DashboardStats>({
     activeFast: null,
@@ -26,7 +28,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchDashboardData()
-  }, [])
+  }, [weightEntries])
 
   const fetchDashboardData = async () => {
     const supabase = createClient()
@@ -66,28 +68,23 @@ export default function DashboardPage() {
         0
       )
 
-      // Fetch recent weight entries
-      const { data: weightEntries } = await supabase
-        .from('weight_entries')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('entry_date', { ascending: false })
-        .limit(7)
-
-      const startWeight = weightEntries?.[weightEntries.length - 1]?.weight_kg
-      const weightLost = startWeight && profile?.current_weight_kg
-        ? startWeight - profile.current_weight_kg
-        : null
+      // Calculate weight stats from weightEntries
+      const sortedWeights = [...weightEntries].sort((a, b) => 
+        new Date(a.entry_date).getTime() - new Date(b.entry_date).getTime()
+      )
+      const startWeight = sortedWeights.length > 0 ? sortedWeights[0].weight_kg : null
+      const currentWeight = weightEntries.length > 0 ? weightEntries[0].weight_kg : null
+      const weightLost = startWeight && currentWeight ? startWeight - currentWeight : null
 
       setStats({
         activeFast: activeFast || null,
-        currentWeight: profile?.current_weight_kg || null,
+        currentWeight: currentWeight || profile?.current_weight_kg || null,
         goalWeight: profile?.goal_weight_kg || null,
         totalFasts,
         completedFasts,
         longestFastHours: longestFast || null,
         weightLost,
-        recentWeightEntries: weightEntries || [],
+        recentWeightEntries: weightEntries.slice(0, 7),
       })
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
