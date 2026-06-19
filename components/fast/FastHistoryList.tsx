@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { Clock, Calendar, TrendingUp, Award } from 'lucide-react'
 
 interface FastHistoryListProps {
-  fasts: Fast[]
+  readonly fasts: Fast[]
 }
 
 export function FastHistoryList({ fasts }: FastHistoryListProps) {
