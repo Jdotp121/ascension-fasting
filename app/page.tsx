@@ -1,65 +1,129 @@
-import Image from "next/image";
+import Link from 'next/link'
+import { Button } from '@/components/ui/Button'
+import { Timer, Scale, TrendingDown, Award } from 'lucide-react'
 
-export default function Home() {
+export default function LandingPage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      {/* Header */}
+      <header className="px-4 py-6 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-gray-900">Ascension Fasting</h1>
+          <div className="flex gap-4">
+            <Link href="/login">
+              <Button variant="ghost">Log In</Button>
+            </Link>
+            <Link href="/signup">
+              <Button variant="primary">Sign Up</Button>
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="px-4 py-20 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-5xl font-bold text-gray-900 mb-6">
+            Your Fasting Journey Starts Here
+          </h2>
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            Track your fasts, monitor your weight, and achieve your health goals with Ascension Fasting.
+            Simple, powerful, and designed for your success.
           </p>
+          <div className="flex gap-4 justify-center">
+            <Link href="/signup">
+              <Button size="lg" variant="primary">
+                Get Started Free
+              </Button>
+            </Link>
+            <Link href="/login">
+              <Button size="lg" variant="outline">
+                Sign In
+              </Button>
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* Features Section */}
+      <section className="px-4 py-20 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h3 className="text-3xl font-bold text-gray-900 mb-4">
+              Everything You Need to Succeed
+            </h3>
+            <p className="text-lg text-gray-600">
+              Powerful features to help you reach your fasting and weight loss goals
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Timer className="w-8 h-8 text-blue-600" />
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-2">Fast Tracking</h4>
+              <p className="text-gray-600">
+                Track water, juice, and intermittent fasts with real-time timers
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Scale className="w-8 h-8 text-green-600" />
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-2">Weight Tracking</h4>
+              <p className="text-gray-600">
+                Log your weight daily and visualize your progress over time
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <TrendingDown className="w-8 h-8 text-purple-600" />
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-2">Progress Analytics</h4>
+              <p className="text-gray-600">
+                See your weight loss trends and fasting statistics at a glance
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="bg-yellow-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Award className="w-8 h-8 text-yellow-600" />
+              </div>
+              <h4 className="text-xl font-semibold text-gray-900 mb-2">Achievements</h4>
+              <p className="text-gray-600">
+                Track your longest fasts and celebrate your milestones
+              </p>
+            </div>
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* CTA Section */}
+      <section className="px-4 py-20 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <h3 className="text-4xl font-bold text-gray-900 mb-6">
+            Ready to Transform Your Health?
+          </h3>
+          <p className="text-xl text-gray-600 mb-8">
+            Join Ascension Fasting today and start your journey to better health
+          </p>
+          <Link href="/signup">
+            <Button size="lg" variant="primary">
+              Create Your Free Account
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="px-4 py-8 sm:px-6 lg:px-8 border-t border-gray-200">
+        <div className="max-w-7xl mx-auto text-center text-gray-600">
+          <p>&copy; 2026 Ascension Fasting. Part of the Ascension Ecosystem.</p>
+        </div>
+      </footer>
     </div>
-  );
+  )
 }
