@@ -1,43 +1,44 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
-import { Timer, Scale, TrendingDown, Award } from 'lucide-react'
+import { Footer } from '@/components/ui/Footer'
+import { Timer, Scale, TrendingDown, Award, AlertCircle } from 'lucide-react'
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header */}
-      <header className="px-4 py-6 sm:px-6 lg:px-8">
+      <header className="px-4 py-4 sm:py-6 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">Ascension Fasting</h1>
-          <div className="flex gap-4">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Ascension Fasting</h1>
+          <div className="flex gap-2 sm:gap-4">
             <Link href="/login">
-              <Button variant="ghost">Log In</Button>
+              <Button variant="ghost" size="sm" className="sm:text-base">Log In</Button>
             </Link>
             <Link href="/signup">
-              <Button variant="primary">Sign Up</Button>
+              <Button variant="primary" size="sm" className="sm:text-base">Sign Up</Button>
             </Link>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="px-4 py-20 sm:px-6 lg:px-8">
+      <section className="px-4 py-12 sm:py-20 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-5xl font-bold text-gray-900 mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
             Your Fasting Journey Starts Here
           </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-2xl mx-auto">
             Track your fasts, monitor your weight, and achieve your health goals with Ascension Fasting.
             Simple, powerful, and designed for your success.
           </p>
-          <div className="flex gap-4 justify-center">
-            <Link href="/signup">
-              <Button size="lg" variant="primary">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center max-w-sm sm:max-w-none mx-auto">
+            <Link href="/signup" className="w-full sm:w-auto">
+              <Button size="lg" variant="primary" className="w-full sm:w-auto">
                 Get Started Free
               </Button>
             </Link>
-            <Link href="/login">
-              <Button size="lg" variant="outline">
+            <Link href="/login" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto">
                 Sign In
               </Button>
             </Link>
@@ -46,13 +47,13 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section className="px-4 py-20 sm:px-6 lg:px-8 bg-white">
+      <section className="px-4 py-12 sm:py-20 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-12 sm:mb-16">
+            <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
               Everything You Need to Succeed
             </h3>
-            <p className="text-lg text-gray-600">
+            <p className="text-base sm:text-lg text-gray-600">
               Powerful features to help you reach your fasting and weight loss goals
             </p>
           </div>
@@ -102,16 +103,16 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="px-4 py-20 sm:px-6 lg:px-8">
+      <section className="px-4 py-12 sm:py-20 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <h3 className="text-4xl font-bold text-gray-900 mb-6">
+          <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
             Ready to Transform Your Health?
           </h3>
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="text-base sm:text-xl text-gray-600 mb-6 sm:mb-8">
             Join Ascension Fasting today and start your journey to better health
           </p>
-          <Link href="/signup">
-            <Button size="lg" variant="primary">
+          <Link href="/signup" className="inline-block w-full sm:w-auto">
+            <Button size="lg" variant="primary" className="w-full sm:w-auto">
               Create Your Free Account
             </Button>
           </Link>
@@ -119,11 +120,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="px-4 py-8 sm:px-6 lg:px-8 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto text-center text-gray-600">
-          <p>&copy; 2026 Ascension Fasting. Part of the Ascension Ecosystem.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

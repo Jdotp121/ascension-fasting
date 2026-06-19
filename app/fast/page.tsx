@@ -3,12 +3,13 @@
 import { useState } from 'react'
 import { Header } from '@/components/navigation/Header'
 import { BottomNav } from '@/components/navigation/BottomNav'
+import { Footer } from '@/components/ui/Footer'
 import { FastTypeSelector } from '@/components/fast/FastTypeSelector'
 import { DurationSelector } from '@/components/fast/DurationSelector'
 import { ActiveFastTimer } from '@/components/fast/ActiveFastTimer'
 import { useFast } from '@/hooks/useFast'
 import { FastType } from '@/types'
-import { Loader2 } from 'lucide-react'
+import { Loader2, AlertCircle } from 'lucide-react'
 
 type FlowStep = 'select-type' | 'select-duration' | 'active-fast'
 
@@ -131,17 +132,29 @@ export default function FastPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 md:pb-8 flex-1">
         {!activeFast && (
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Fast Tracking</h1>
-            <p className="mt-2 text-gray-600">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Fast Tracking</h1>
+            <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600">
               {currentStep === 'select-type' && 'Start a new fasting journey'}
               {currentStep === 'select-duration' && 'Set your fasting duration'}
             </p>
+          </div>
+        )}
+
+        {error && !activeFast && (
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-red-900">Error</p>
+                <p className="text-sm text-red-700 mt-1">{error}</p>
+              </div>
+            </div>
           </div>
         )}
 

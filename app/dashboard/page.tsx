@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { Footer } from '@/components/ui/Footer'
 import { Header } from '@/components/navigation/Header'
 import { BottomNav } from '@/components/navigation/BottomNav'
-import { Timer, Scale, TrendingDown, Award, Target, Flame } from 'lucide-react'
+import { Timer, Scale, TrendingDown, Award, Target, Flame, AlertCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { DashboardStats } from '@/types'
 import { useWeight } from '@/hooks/useWeight'
@@ -15,6 +16,7 @@ export default function DashboardPage() {
   const router = useRouter()
   const { weightEntries } = useWeight()
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [stats, setStats] = useState<DashboardStats>({
     activeFast: null,
     currentWeight: null,
@@ -86,8 +88,9 @@ export default function DashboardPage() {
         weightLost,
         recentWeightEntries: weightEntries.slice(0, 7),
       })
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching dashboard data:', error)
+      setError(error.message || 'Failed to load dashboard data')
     } finally {
       setLoading(false)
     }
@@ -95,9 +98,9 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 flex flex-col">
         <Header />
-        <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
+        <div className="flex items-center justify-center flex-1 px-4">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
             <p className="mt-4 text-gray-600">Loading dashboard...</p>
@@ -109,14 +112,27 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="mt-2 text-gray-600">Track your fasting journey</p>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 md:pb-8 flex-1">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
+          <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600">Track your fasting journey</p>
         </div>
+
+        {/* Error State */}
+        {error && (
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-red-900">Error loading dashboard</p>
+                <p className="text-sm text-red-700 mt-1">{error}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Active Fast Card */}
         {stats.activeFast ? (

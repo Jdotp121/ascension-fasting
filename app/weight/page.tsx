@@ -79,13 +79,13 @@ export default function WeightPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Weight Tracker</h1>
-          <p className="mt-2 text-gray-600">Log and track your weight progress</p>
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 md:pb-8 flex-1">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Weight Tracker</h1>
+          <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600">Log and track your weight progress</p>
         </div>
 
         <div className="space-y-6">
