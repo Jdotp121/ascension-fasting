@@ -115,8 +115,8 @@ export default function AchievementsPage() {
                 <Button
                   onClick={handleCheckAchievements}
                   disabled={checking}
-                  variant="secondary"
-                  className="bg-white hover:bg-yellow-50 border-yellow-300"
+                  variant="outline"
+                  className="bg-white hover:bg-yellow-50 border-yellow-300 text-gray-900"
                 >
                   {checking ? (
                     <>
