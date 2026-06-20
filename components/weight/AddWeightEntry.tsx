@@ -1,7 +1,6 @@
 'use client'
 
-import { useState } from 'react'
-import type { FormEvent } from 'react'
+import React, { useState } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -18,7 +17,7 @@ export function AddWeightEntry({ onAdd }: AddWeightEntryProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     
     const weightNum = Number.parseFloat(weight)
@@ -81,18 +80,23 @@ export function AddWeightEntry({ onAdd }: AddWeightEntryProps) {
             </div>
           )}
 
-          <Input
-            label="Weight (kg)"
-            type="number"
-            step="0.1"
-            min="20"
-            max="500"
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
-            placeholder="75.5"
-            required
-            helperText="Enter your weight in kilograms (20-500 kg)"
-          />
+          <div className="space-y-2">
+            <Input
+              label="Weight (kg)"
+              type="number"
+              step="0.1"
+              min="20"
+              max="500"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              placeholder="75.5"
+              required
+              helperText="Enter your weight in kilograms (20-500 kg)"
+            />
+            <p className="text-xs text-gray-500 italic px-1">
+              Morning weigh-ins on an empty stomach provide the most reliable trend data.
+            </p>
+          </div>
 
           <Input
             label="Date"

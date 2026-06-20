@@ -4,9 +4,11 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { WeightEntry } from '@/types'
 import { useAuth } from './useAuth'
+import { useAchievements } from './useAchievements'
 
 export function useWeight() {
   const { user } = useAuth()
+  const { checkAndUnlockAchievements } = useAchievements()
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -85,6 +87,10 @@ export function useWeight() {
 
       // Refresh the list
       await fetchWeightEntries()
+      
+      // Check for achievements after adding weight entry
+      await checkAndUnlockAchievements()
+      
       return data
     } catch (err: any) {
       setError(err.message)

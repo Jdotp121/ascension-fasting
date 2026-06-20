@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { Footer } from '@/components/ui/Footer'
-import { Timer, Scale, TrendingDown, Award, AlertCircle } from 'lucide-react'
+import { Timer, Scale, TrendingDown, Award } from 'lucide-react'
 
 export default function LandingPage() {
   return (

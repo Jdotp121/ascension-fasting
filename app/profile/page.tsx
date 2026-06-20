@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { Header } from '@/components/navigation/Header'
 import { BottomNav } from '@/components/navigation/BottomNav'
+import { AppPageLayout } from '@/components/layout/AppPageLayout'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { ProfileForm } from '@/components/profile/ProfileForm'
@@ -27,14 +28,14 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
         <Header />
-        <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 md:pb-8 flex-1">
+        <AppPageLayout>
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
               <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto" />
               <p className="mt-4 text-gray-600">Loading profile...</p>
             </div>
           </div>
-        </main>
+        </AppPageLayout>
         <BottomNav />
       </div>
     )
@@ -44,13 +45,13 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
         <Header />
-        <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 md:pb-8 flex-1">
+        <AppPageLayout>
           <Card>
             <CardContent className="py-12 text-center">
               <p className="text-red-600">Error loading profile: {error || 'Profile not found'}</p>
             </CardContent>
           </Card>
-        </main>
+        </AppPageLayout>
         <BottomNav />
       </div>
     )
@@ -60,12 +61,7 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 md:pb-8 flex-1">
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Profile</h1>
-          <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600">Manage your account and settings</p>
-        </div>
-
+      <AppPageLayout title="Profile" subtitle="Manage your account and settings">
         <div className="space-y-6">
           <ProfileForm profile={profile} onSave={updateProfile} />
 
@@ -99,7 +95,7 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
         </div>
-      </main>
+      </AppPageLayout>
 
       <BottomNav />
     </div>

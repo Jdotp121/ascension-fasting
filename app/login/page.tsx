@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { PublicRoute } from '@/components/auth/PublicRoute'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -40,6 +41,9 @@ export default function LoginPage() {
   }
 
   return (
+
+
+    <PublicRoute>
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
@@ -96,6 +100,7 @@ export default function LoginPage() {
           </div>
         </form>
       </div>
-    </div>
+      </div>
+    </PublicRoute>
   )
 }

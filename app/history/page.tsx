@@ -2,7 +2,9 @@
 
 import { Header } from '@/components/navigation/Header'
 import { BottomNav } from '@/components/navigation/BottomNav'
+import { AppPageLayout } from '@/components/layout/AppPageLayout'
 import { FastHistoryList } from '@/components/fast/FastHistoryList'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { useFastHistory } from '@/hooks/useFastHistory'
 import { Loader2, AlertCircle } from 'lucide-react'
 
@@ -10,15 +12,11 @@ export default function HistoryPage() {
   const { fasts, loading, error } = useFastHistory()
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 md:pb-8 flex-1">
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Fast History</h1>
-          <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600">View your fasting history and statistics</p>
-        </div>
-
+      <AppPageLayout title="Fast History" subtitle="View your fasting history and statistics">
         {loading && (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
@@ -41,9 +39,10 @@ export default function HistoryPage() {
         )}
 
         {!loading && !error && <FastHistoryList fasts={fasts} />}
-      </main>
+      </AppPageLayout>
 
       <BottomNav />
-    </div>
+      </div>
+    </ProtectedRoute>
   )
 }

@@ -129,8 +129,8 @@ export function ActiveFastTimer({ fast, onEndFast }: ActiveFastTimerProps) {
           <div>
             <h4 className="font-semibold text-gray-900 mb-2">Current Benefits:</h4>
             <ul className="space-y-1">
-              {currentStage.benefits.map((benefit, idx) => (
-                <li key={idx} className="flex items-start text-sm text-gray-600">
+              {currentStage.benefits.map((benefit) => (
+                <li key={benefit} className="flex items-start text-sm text-gray-600">
                   <span className="text-green-600 mr-2">✓</span>
                   {benefit}
                 </li>
@@ -173,22 +173,35 @@ export function ActiveFastTimer({ fast, onEndFast }: ActiveFastTimerProps) {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {BODY_STAGES.map((stage, idx) => {
+            {BODY_STAGES.map((stage) => {
               const isPast = elapsedHours >= stage.minHours
               const isCurrent = currentStage.name === stage.name
               
+              // Extract nested ternary into separate variables for better readability
+              let containerClasses = 'flex items-center gap-3 p-3 rounded-lg transition-colors '
+              if (isCurrent) {
+                containerClasses += 'bg-blue-50 border-2 border-blue-500'
+              } else if (isPast) {
+                containerClasses += 'bg-gray-50'
+              } else {
+                containerClasses += 'bg-white border border-gray-200'
+              }
+              
+              let dotClasses = 'w-3 h-3 rounded-full '
+              if (isCurrent) {
+                dotClasses += 'bg-blue-500 animate-pulse'
+              } else if (isPast) {
+                dotClasses += 'bg-green-500'
+              } else {
+                dotClasses += 'bg-gray-300'
+              }
+              
               return (
                 <div 
-                  key={idx}
-                  className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
-                    isCurrent ? 'bg-blue-50 border-2 border-blue-500' : 
-                    isPast ? 'bg-gray-50' : 'bg-white border border-gray-200'
-                  }`}
+                  key={stage.name}
+                  className={containerClasses}
                 >
-                  <div className={`w-3 h-3 rounded-full ${
-                    isCurrent ? 'bg-blue-500 animate-pulse' :
-                    isPast ? 'bg-green-500' : 'bg-gray-300'
-                  }`} />
+                  <div className={dotClasses} />
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <span className={`font-semibold ${isCurrent ? 'text-blue-900' : 'text-gray-900'}`}>

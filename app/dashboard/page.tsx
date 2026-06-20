@@ -4,17 +4,22 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { Footer } from '@/components/ui/Footer'
 import { Header } from '@/components/navigation/Header'
 import { BottomNav } from '@/components/navigation/BottomNav'
+import { AppPageLayout } from '@/components/layout/AppPageLayout'
+import { AchievementsCard } from '@/components/achievements/AchievementsCard'
+import { AchievementCelebration } from '@/components/achievements/AchievementCelebration'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { Timer, Scale, TrendingDown, Award, Target, Flame, AlertCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { DashboardStats } from '@/types'
 import { useWeight } from '@/hooks/useWeight'
+import { useAchievements } from '@/hooks/useAchievements'
 
 export default function DashboardPage() {
   const router = useRouter()
   const { weightEntries } = useWeight()
+  const { unlockedCount, totalCount, newlyUnlocked, clearNewlyUnlocked, checkAndUnlockAchievements } = useAchievements()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [stats, setStats] = useState<DashboardStats>({
@@ -31,6 +36,16 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchDashboardData()
   }, [weightEntries])
+
+  useEffect(() => {
+    // Check for new achievements when dashboard loads
+    const checkAchievements = async () => {
+      await checkAndUnlockAchievements()
+    }
+    if (!loading) {
+      checkAchievements()
+    }
+  }, [loading])
 
   const fetchDashboardData = async () => {
     const supabase = createClient()
@@ -100,27 +115,25 @@ export default function DashboardPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
         <Header />
-        <div className="flex items-center justify-center flex-1 px-4">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading dashboard...</p>
+        <AppPageLayout>
+          <div className="flex items-center justify-center py-12">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading dashboard...</p>
+            </div>
           </div>
-        </div>
+        </AppPageLayout>
         <BottomNav />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
-      
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 md:pb-8 flex-1">
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600">Track your fasting journey</p>
-        </div>
-
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <Header />
+        
+        <AppPageLayout title="Dashboard" subtitle="Track your fasting journey">
         {/* Error State */}
         {error && (
           <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
@@ -268,6 +281,9 @@ export default function DashboardPage() {
               <p className="text-sm text-gray-600 mt-2">Personal record</p>
             </CardContent>
           </Card>
+
+          {/* Achievements */}
+          <AchievementsCard unlockedCount={unlockedCount} totalCount={totalCount} />
         </div>
 
         {/* Quick Actions */}
@@ -297,9 +313,18 @@ export default function DashboardPage() {
             </Button>
           </div>
         </div>
-      </main>
+      </AppPageLayout>
 
       <BottomNav />
-    </div>
+      
+      {/* Achievement Celebration Modal */}
+      {newlyUnlocked.length > 0 && (
+        <AchievementCelebration
+          achievementIds={newlyUnlocked}
+          onClose={clearNewlyUnlocked}
+        />
+      )}
+      </div>
+    </ProtectedRoute>
   )
 }

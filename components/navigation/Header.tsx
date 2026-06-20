@@ -14,6 +14,7 @@ export function Header() {
     { href: '/fast', label: 'Fast' },
     { href: '/weight', label: 'Weight' },
     { href: '/history', label: 'History' },
+    { href: '/achievements', label: 'Achievements' },
     { href: '/profile', label: 'Profile' },
   ]
 

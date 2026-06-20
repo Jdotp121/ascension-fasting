@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react'
 import { Header } from '@/components/navigation/Header'
 import { BottomNav } from '@/components/navigation/BottomNav'
+import { AppPageLayout } from '@/components/layout/AppPageLayout'
 import { AddWeightEntry } from '@/components/weight/AddWeightEntry'
 import { WeightProgressCard } from '@/components/weight/WeightProgressCard'
 import { WeightChart } from '@/components/weight/WeightChart'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { useWeight } from '@/hooks/useWeight'
 import { createClient } from '@/lib/supabase/client'
 import { Loader2, Trash2, Calendar } from 'lucide-react'
@@ -65,30 +67,42 @@ export default function WeightPage() {
 
   if (loading || loadingProfile) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 flex flex-col">
         <Header />
-        <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
-          <div className="text-center">
-            <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto" />
-            <p className="mt-4 text-gray-600">Loading weight data...</p>
+        <AppPageLayout>
+          <div className="flex items-center justify-center py-12">
+            <div className="text-center">
+              <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto" />
+              <p className="mt-4 text-gray-600">Loading weight data...</p>
+            </div>
           </div>
-        </div>
+        </AppPageLayout>
         <BottomNav />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
-      
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 md:pb-8 flex-1">
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Weight Tracker</h1>
-          <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600">Log and track your weight progress</p>
-        </div>
-
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <Header />
+        
+        <AppPageLayout title="Weight Tracker" subtitle="Log and track your weight progress">
         <div className="space-y-6">
+          {/* Weight Tracking Recommendation */}
+          <Card className="bg-blue-50 border-blue-200">
+            <CardContent className="py-4">
+              <div className="flex gap-3">
+                <span className="text-2xl">💡</span>
+                <div className="flex-1">
+                  <p className="text-sm text-blue-900 leading-relaxed">
+                    <strong>For the most accurate and consistent results,</strong> weigh yourself first thing in the morning after using the bathroom and before eating or drinking.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Add Weight Entry */}
           <AddWeightEntry onAdd={addWeightEntry} />
 
@@ -115,37 +129,51 @@ export default function WeightPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {weightEntries.map((entry) => (
-                    <div
-                      key={entry.id}
-                      className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                    >
-                      <div className="flex-1">
-                        <p className="font-semibold text-gray-900">
-                          {entry.weight_kg.toFixed(1)} kg
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {new Date(entry.entry_date).toLocaleDateString('en-US', {
-                            weekday: 'short',
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric'
-                          })}
-                        </p>
-                        {entry.notes && (
-                          <p className="text-sm text-gray-500 mt-1">{entry.notes}</p>
-                        )}
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDeleteEntry(entry.id)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  {weightEntries.map((entry) => {
+                    const entryDate = new Date(entry.entry_date)
+                    const createdDate = new Date(entry.created_at)
+                    const today = new Date()
+                    const isToday = entryDate.toDateString() === today.toDateString()
+                    
+                    return (
+                      <div
+                        key={entry.id}
+                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                       >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  ))}
+                        <div className="flex-1">
+                          <p className="font-semibold text-gray-900">
+                            {entry.weight_kg.toFixed(1)} kg
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            {isToday ? 'Today' : entryDate.toLocaleDateString('en-US', {
+                              weekday: 'short',
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric'
+                            })}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            Logged {isToday ? 'today' : 'on'} at {createdDate.toLocaleTimeString('en-US', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hour12: true
+                            })}
+                          </p>
+                          {entry.notes && (
+                            <p className="text-sm text-gray-500 mt-1">{entry.notes}</p>
+                          )}
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeleteEntry(entry.id)}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    )
+                  })}
                 </div>
               </CardContent>
             </Card>
@@ -170,9 +198,10 @@ export default function WeightPage() {
             </Card>
           )}
         </div>
-      </main>
+      </AppPageLayout>
 
       <BottomNav />
-    </div>
+      </div>
+    </ProtectedRoute>
   )
 }

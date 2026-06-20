@@ -81,7 +81,7 @@ export function ProfileForm({ profile, onSave }: ProfileFormProps) {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     
     if (!validateForm()) {
@@ -117,23 +117,24 @@ export function ProfileForm({ profile, onSave }: ProfileFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Message */}
+      {message && (
+        <div className={`p-4 rounded-lg ${
+          message.type === 'success' 
+            ? 'bg-green-50 text-green-800 border border-green-200' 
+            : 'bg-red-50 text-red-800 border border-red-200'
+        }`}>
+          {message.text}
+        </div>
+      )}
+
+      {/* Personal Information Card */}
       <Card>
         <CardHeader>
           <CardTitle>Personal Information</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Message */}
-          {message && (
-            <div className={`p-4 rounded-lg ${
-              message.type === 'success' 
-                ? 'bg-green-50 text-green-800 border border-green-200' 
-                : 'bg-red-50 text-red-800 border border-red-200'
-            }`}>
-              {message.text}
-            </div>
-          )}
-
           {/* Name */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
@@ -226,7 +227,15 @@ export function ProfileForm({ profile, onSave }: ProfileFormProps) {
               <p className="mt-1 text-sm text-red-600">{errors.height_cm}</p>
             )}
           </div>
+        </CardContent>
+      </Card>
 
+      {/* Health Goals Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Health Goals</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
           {/* Current Weight (read-only) */}
           <div>
             <label htmlFor="current_weight" className="block text-sm font-medium text-gray-700 mb-2">
@@ -284,29 +293,29 @@ export function ProfileForm({ profile, onSave }: ProfileFormProps) {
               ]}
             />
           </div>
-
-          {/* Submit Button */}
-          <div className="pt-4">
-            <Button
-              type="submit"
-              disabled={saving}
-              className="w-full sm:w-auto"
-            >
-              {saving ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4 mr-2" />
-                  Save Changes
-                </>
-              )}
-            </Button>
-          </div>
         </CardContent>
       </Card>
+
+      {/* Submit Button */}
+      <div className="pt-2">
+        <Button
+          type="submit"
+          disabled={saving}
+          className="w-full sm:w-auto"
+        >
+          {saving ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            <>
+              <Save className="w-4 h-4 mr-2" />
+              Save Changes
+            </>
+          )}
+        </Button>
+      </div>
     </form>
   )
 }

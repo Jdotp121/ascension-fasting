@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { WeightEntry } from '@/types'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts'
@@ -11,6 +12,11 @@ interface WeightChartProps {
 }
 
 export function WeightChart({ weightEntries, goalWeight }: WeightChartProps) {
+  const [mounted, setMounted] = useState(false)
+  
+  useEffect(() => {
+    setMounted(true)
+  }, [])
   // Sort entries by date ascending
   const sortedEntries = [...weightEntries].sort((a, b) => 
     new Date(a.entry_date).getTime() - new Date(b.entry_date).getTime()
@@ -61,12 +67,13 @@ export function WeightChart({ weightEntries, goalWeight }: WeightChartProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="w-full h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={chartData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-            >
+        {mounted ? (
+          <div className="w-full" style={{ height: '320px' }}>
+            <ResponsiveContainer width="100%" height={320}>
+              <LineChart
+                data={chartData}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis 
                 dataKey="date" 
@@ -110,9 +117,14 @@ export function WeightChart({ weightEntries, goalWeight }: WeightChartProps) {
                 activeDot={{ r: 7 }}
                 name="Weight (kg)"
               />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <div className="w-full h-80 flex items-center justify-center">
+            <div className="text-gray-400">Loading chart...</div>
+          </div>
+        )}
 
         {/* Chart Legend */}
         <div className="mt-4 flex items-center justify-center gap-6 text-sm">
