@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { EmailConfirmationScreen } from '@/components/auth/EmailConfirmationScreen'
 
 export default function SignUpPage() {
   const router = useRouter()
@@ -14,6 +15,8 @@ export default function SignUpPage() {
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showConfirmation, setShowConfirmation] = useState(false)
+  const [confirmedEmail, setConfirmedEmail] = useState('')
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -36,14 +39,29 @@ export default function SignUpPage() {
       if (signUpError) throw signUpError
 
       if (data.user) {
-        // Redirect to onboarding to complete profile
-        router.push('/onboarding')
+        // Check if email confirmation is required
+        // If user.identities is empty, email confirmation is required
+        const needsEmailConfirmation = !data.user.identities || data.user.identities.length === 0
+        
+        if (needsEmailConfirmation) {
+          // Show confirmation screen
+          setConfirmedEmail(email)
+          setShowConfirmation(true)
+        } else {
+          // Email confirmation disabled, proceed to onboarding
+          router.push('/onboarding')
+        }
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred during sign up')
     } finally {
       setLoading(false)
     }
+  }
+
+  // Show confirmation screen if email verification is needed
+  if (showConfirmation) {
+    return <EmailConfirmationScreen email={confirmedEmail} />
   }
 
   return (

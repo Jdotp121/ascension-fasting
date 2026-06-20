@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { Header } from '@/components/navigation/Header'
 import { BottomNav } from '@/components/navigation/BottomNav'
 import { AppPageLayout } from '@/components/layout/AppPageLayout'
@@ -12,7 +13,7 @@ import { Button } from '@/components/ui/Button'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { useWeight } from '@/hooks/useWeight'
 import { createClient } from '@/lib/supabase/client'
-import { Loader2, Trash2, Calendar } from 'lucide-react'
+import { Loader2, Trash2, Calendar, Target, Settings } from 'lucide-react'
 
 export default function WeightPage() {
   const { weightEntries, loading, addWeightEntry, deleteWeightEntry } = useWeight()
@@ -114,6 +115,36 @@ export default function WeightPage() {
               goalWeight={goalWeight}
             />
           )}
+
+          {/* Goal Weight Guidance */}
+          <Card className="bg-gradient-to-br from-green-50 to-teal-50 border-2 border-green-200">
+            <CardContent className="py-4">
+              <div className="flex gap-3">
+                <div className="flex-shrink-0">
+                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                    <Target className="w-6 h-6 text-green-600" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-green-900 mb-2 flex items-center gap-2">
+                    🎯 Goal Weight Management
+                  </h3>
+                  <p className="text-sm text-green-900 leading-relaxed mb-3">
+                    Your goal weight is configured from your <strong>Profile page</strong> under Health Goals. Update it anytime to track progress toward a new target.
+                  </p>
+                  <Link href="/profile">
+                    <Button 
+                      size="sm" 
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      <Settings className="w-4 h-4 mr-2" />
+                      Update Goal Weight
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Weight Chart */}
           <WeightChart weightEntries={weightEntries} goalWeight={goalWeight} />
