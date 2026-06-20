@@ -38,19 +38,16 @@ export default function SignUpPage() {
 
       if (signUpError) throw signUpError
 
-      if (data.user) {
-        // Check if email confirmation is required
-        // If user.identities is empty, email confirmation is required
-        const needsEmailConfirmation = !data.user.identities || data.user.identities.length === 0
-        
-        if (needsEmailConfirmation) {
-          // Show confirmation screen
-          setConfirmedEmail(email)
-          setShowConfirmation(true)
-        } else {
-          // Email confirmation disabled, proceed to onboarding
-          router.push('/onboarding')
-        }
+      // Check if email confirmation is required by checking session status
+      // If session exists, user is already authenticated
+      // If session is null, email confirmation is required
+      if (data.session) {
+        // Session exists - email confirmation disabled, proceed to onboarding
+        router.push('/onboarding')
+      } else {
+        // Email confirmation required - show confirmation screen
+        setConfirmedEmail(email)
+        setShowConfirmation(true)
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred during sign up')
