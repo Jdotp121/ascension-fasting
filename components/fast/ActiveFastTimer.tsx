@@ -54,6 +54,17 @@ export function ActiveFastTimer({ fast, onEndFast }: ActiveFastTimerProps) {
     }
   }
 
+  // Get stage color hex code
+  const getStageColor = (color: string): string => {
+    switch(color) {
+      case 'green': return '#22c55e'
+      case 'blue': return '#3b82f6'
+      case 'purple': return '#a855f7'
+      case 'yellow': return '#eab308'
+      default: return '#6b7280'
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* Main Timer Display */}
@@ -85,7 +96,7 @@ export function ActiveFastTimer({ fast, onEndFast }: ActiveFastTimerProps) {
             <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
               <div 
                 className="bg-gradient-to-r from-blue-500 to-purple-500 h-full transition-all duration-1000 ease-out"
-                style={{ width: `${overallProgress}%` }}
+                style={{ width: `${Math.min(100, Math.max(0, overallProgress))}%` }}
               />
             </div>
           </div>
@@ -114,12 +125,15 @@ export function ActiveFastTimer({ fast, onEndFast }: ActiveFastTimerProps) {
             <div>
               <div className="flex justify-between text-sm text-gray-600 mb-2">
                 <span>Stage Progress</span>
-                <span>{stageProgress.toFixed(0)}%</span>
+                <span>{Math.min(100, Math.max(0, stageProgress)).toFixed(0)}%</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                 <div 
-                  className={`bg-${currentStage.color}-500 h-full rounded-full transition-all duration-1000`}
-                  style={{ width: `${stageProgress}%` }}
+                  className="h-full rounded-full transition-all duration-1000"
+                  style={{ 
+                    width: `${Math.min(100, Math.max(0, stageProgress))}%`,
+                    backgroundColor: getStageColor(currentStage.color)
+                  }}
                 />
               </div>
             </div>
