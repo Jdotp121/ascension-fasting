@@ -78,7 +78,7 @@ export function useAchievements() {
 
       const weightEntriesCount = weightEntries?.length || 0
       const firstWeight = weightEntries && weightEntries.length > 0 ? weightEntries[0].weight_kg : null
-      const currentWeight = weightEntries && weightEntries.length > 0 ? weightEntries[weightEntries.length - 1].weight_kg : profile?.current_weight_kg || null
+      const currentWeight = weightEntries && weightEntries.length > 0 ? weightEntries.at(-1)?.weight_kg : profile?.current_weight_kg || null
       const weightLost = firstWeight && currentWeight ? Math.max(0, firstWeight - currentWeight) : 0
 
       // Get days logged (unique days with weight entries)
