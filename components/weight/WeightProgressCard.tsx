@@ -90,11 +90,11 @@ export function WeightProgressCard({ startingWeight, currentWeight, goalWeight }
                 <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
                   <div 
                     className="bg-gradient-to-r from-purple-500 to-blue-500 h-full transition-all duration-500"
-                    style={{ width: `${progressPercentage}%` }}
+                    style={{ width: `${Math.min(100, Math.max(0, progressPercentage))}%` }}
                   />
                 </div>
                 <p className="text-xs text-gray-500 mt-1 text-center">
-                  {progressPercentage.toFixed(0)}% to goal
+                  {Math.min(100, Math.max(0, progressPercentage)).toFixed(0)}% to goal
                 </p>
               </div>
             )}
