@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useEffect, FormEvent } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
 import { MainGoal, Sex } from '@/types'
+import { AlertCircle } from 'lucide-react'
 
 export default function OnboardingPage() {
   const router = useRouter()
@@ -36,7 +37,7 @@ export default function OnboardingPage() {
     getUser()
   }, [router])
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
@@ -85,6 +86,21 @@ export default function OnboardingPage() {
           <p className="mt-2 text-sm text-gray-600">
             Help us personalize your fasting experience
           </p>
+        </div>
+
+        {/* Health Disclaimer */}
+        <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-semibold text-amber-900 mb-1">Health Disclaimer</p>
+              <p className="text-sm text-amber-800 leading-relaxed">
+                Ascension Fasting is for general wellness tracking only and does not provide medical advice, 
+                diagnosis, or treatment. Speak to a qualified health professional before fasting, especially 
+                if you have a medical condition, are pregnant, under 18, or taking medication.
+              </p>
+            </div>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="mt-8 bg-white p-8 rounded-lg shadow-md space-y-6">
