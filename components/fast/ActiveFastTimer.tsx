@@ -39,6 +39,8 @@ export function ActiveFastTimer({ fast, onEndFast }: ActiveFastTimerProps) {
   const plannedDurationMs = plannedEndTime.getTime() - startTime.getTime()
   const plannedDurationHours = plannedDurationMs / (1000 * 60 * 60)
   const overallProgress = Math.min(100, (elapsedHours / plannedDurationHours) * 100)
+  const remainingHours = plannedDurationHours - elapsedHours
+  const isGoalReached = remainingHours <= 0
 
   const currentStage = getCurrentBodyStage(elapsedHours)
   const nextStage = getNextBodyStage(elapsedHours)
@@ -78,7 +80,7 @@ export function ActiveFastTimer({ fast, onEndFast }: ActiveFastTimerProps) {
               </span>
             </div>
             
-            <div className="text-6xl font-bold text-gray-900 mb-2 font-mono">
+            <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-2 font-mono max-w-full overflow-hidden break-all leading-tight">
               {formatDetailedDuration(elapsedHours)}
             </div>
             
@@ -98,6 +100,18 @@ export function ActiveFastTimer({ fast, onEndFast }: ActiveFastTimerProps) {
                 className="bg-gradient-to-r from-blue-500 to-purple-500 h-full transition-all duration-1000 ease-out"
                 style={{ width: `${Math.min(100, Math.max(0, overallProgress))}%` }}
               />
+            </div>
+            
+            {/* Remaining Time */}
+            <div className="flex justify-between text-sm mt-2">
+              {isGoalReached ? (
+                <span className="text-green-600 font-semibold">Goal reached</span>
+              ) : (
+                <>
+                  <span className="text-gray-600">Time remaining</span>
+                  <span className="text-gray-900 font-medium">{formatDuration(remainingHours)}</span>
+                </>
+              )}
             </div>
           </div>
         </CardContent>
