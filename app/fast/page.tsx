@@ -9,10 +9,11 @@ import { DurationSelector } from '@/components/fast/DurationSelector'
 import { ActiveFastTimer } from '@/components/fast/ActiveFastTimer'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { useFast } from '@/hooks/useFast'
-import { FastType } from '@/types'
+import { FastType, Fast } from '@/types'
 import { Loader2, AlertCircle } from 'lucide-react'
+import { FastCompletionSummary } from '@/components/fast/FastCompletionSummary'
 
-type FlowStep = 'select-type' | 'select-duration' | 'active-fast'
+type FlowStep = 'select-type' | 'select-duration' | 'active-fast' | 'completed'
 
 export default function FastPage() {
   const { activeFast, loading, error, startFast, endFast } = useFast()
@@ -20,6 +21,8 @@ export default function FastPage() {
   const [currentStep, setCurrentStep] = useState<FlowStep>('select-type')
   const [isStarting, setIsStarting] = useState(false)
   const [isEnding, setIsEnding] = useState(false)
+  const [completedFast, setCompletedFast] = useState<Fast | null>(null)
+
 
   // Handle fast type selection
   const handleTypeSelect = (type: FastType) => {
@@ -53,8 +56,9 @@ export default function FastPage() {
   const handleEndFast = async () => {
     setIsEnding(true)
     try {
-      await endFast()
-      setCurrentStep('select-type')
+      const finishedFast = await endFast()
+      setCompletedFast(finishedFast)
+      setCurrentStep('completed')
       setSelectedType(null)
     } catch (err) {
       console.error('Error ending fast:', err)
@@ -63,6 +67,13 @@ export default function FastPage() {
       setIsEnding(false)
     }
   }
+
+  // Handle starting a new fast from the completion summary
+  const handleStartNewFastFromSummary = () => {
+    setCompletedFast(null)
+    setCurrentStep('select-type')
+  }
+
 
   // Determine what to show
   const renderContent = () => {
@@ -101,6 +112,16 @@ export default function FastPage() {
       return <ActiveFastTimer fast={activeFast} onEndFast={handleEndFast} />
     }
 
+    // Fast just completed - show completion summary with post-fast suggestions link
+    if (currentStep === 'completed' && completedFast) {
+      return (
+        <FastCompletionSummary
+          fast={completedFast}
+          onStartNewFast={handleStartNewFastFromSummary}
+        />
+      )
+    }
+
     // Starting a fast - show appropriate step
     if (isStarting) {
       return (
@@ -135,9 +156,11 @@ export default function FastPage() {
   // Compute subtitle based on current state
   const getSubtitle = () => {
     if (activeFast) return undefined
+    if (currentStep === 'completed') return 'Nice work — here\'s a quick summary'
     if (currentStep === 'select-type') return 'Start a new fasting journey'
     return 'Set your fasting duration'
   }
+
 
   return (
     <ProtectedRoute>

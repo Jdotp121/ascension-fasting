@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation'
 import { DashboardStats } from '@/types'
 import { useWeight } from '@/hooks/useWeight'
 import { useAchievements } from '@/hooks/useAchievements'
+import { WeightProgressCard } from '@/components/weight/WeightProgressCard'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -185,6 +186,23 @@ export default function DashboardPage() {
               </Button>
             </CardContent>
           </Card>
+        )}
+
+        {/* Weight Progress Card */}
+        {weightEntries.length > 0 && (
+          <div className="mb-6">
+            <WeightProgressCard
+              startingWeight={
+                weightEntries.length > 0
+                  ? [...weightEntries].sort((a, b) => 
+                      new Date(a.entry_date).getTime() - new Date(b.entry_date).getTime()
+                    )[0].weight_kg
+                  : null
+              }
+              currentWeight={stats.currentWeight}
+              goalWeight={stats.goalWeight}
+            />
+          </div>
         )}
 
         {/* Stats Grid */}

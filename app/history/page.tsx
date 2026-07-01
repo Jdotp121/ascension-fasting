@@ -1,12 +1,13 @@
 'use client'
 
+import Link from 'next/link'
 import { Header } from '@/components/navigation/Header'
 import { BottomNav } from '@/components/navigation/BottomNav'
 import { AppPageLayout } from '@/components/layout/AppPageLayout'
 import { FastHistoryList } from '@/components/fast/FastHistoryList'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { useFastHistory } from '@/hooks/useFastHistory'
-import { Loader2, AlertCircle } from 'lucide-react'
+import { Loader2, AlertCircle, Sparkles } from 'lucide-react'
 
 export default function HistoryPage() {
   const { fasts, loading, error } = useFastHistory()
@@ -17,6 +18,20 @@ export default function HistoryPage() {
       <Header />
       
       <AppPageLayout title="Fast History" subtitle="View your fasting history and statistics">
+        {/* Optional link to Post-Fast Suggestions (uses most recent completed fast) */}
+        {!loading && !error && fasts.length > 0 && (
+          <Link
+            href="/post-fast"
+            className="mb-6 flex items-center justify-between rounded-lg border border-purple-200 bg-purple-50 px-4 py-3 text-sm font-medium text-purple-800 hover:bg-purple-100 transition-colors"
+          >
+            <span className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-purple-600" />
+              Post-Fast Suggestions
+            </span>
+            <span className="text-purple-500">→</span>
+          </Link>
+        )}
+
         {loading && (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
