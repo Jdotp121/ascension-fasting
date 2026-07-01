@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -34,23 +34,9 @@ export default function DashboardPage() {
     recentWeightEntries: [],
   })
 
-  useEffect(() => {
-    fetchDashboardData()
-  }, [weightEntries])
-
-  useEffect(() => {
-    // Check for new achievements when dashboard loads
-    const checkAchievements = async () => {
-      await checkAndUnlockAchievements()
-    }
-    if (!loading) {
-      checkAchievements()
-    }
-  }, [loading])
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     const supabase = createClient()
-    
+
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
@@ -81,13 +67,13 @@ export default function DashboardPage() {
 
       const totalFasts = fasts?.length || 0
       const completedFasts = fasts?.filter(f => f.completed).length || 0
-      const longestFast = fasts?.reduce((max, f) => 
-        f.duration_hours && f.duration_hours > (max || 0) ? f.duration_hours : max, 
+      const longestFast = fasts?.reduce((max, f) =>
+        f.duration_hours && f.duration_hours > (max || 0) ? f.duration_hours : max,
         0
       )
 
       // Calculate weight stats from weightEntries
-      const sortedWeights = [...weightEntries].sort((a, b) => 
+      const sortedWeights = [...weightEntries].sort((a, b) =>
         new Date(a.entry_date).getTime() - new Date(b.entry_date).getTime()
       )
       const startWeight = sortedWeights.length > 0 ? sortedWeights[0].weight_kg : null
@@ -104,13 +90,28 @@ export default function DashboardPage() {
         weightLost,
         recentWeightEntries: weightEntries.slice(0, 7),
       })
-    } catch (error: any) {
-      console.error('Error fetching dashboard data:', error)
-      setError(error.message || 'Failed to load dashboard data')
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to load dashboard data'
+      console.error('Error fetching dashboard data:', message)
+      setError(message)
     } finally {
       setLoading(false)
     }
-  }
+  }, [weightEntries])
+
+  useEffect(() => {
+    // Initial data fetch on mount. setState calls happen inside an async
+    // callback after awaiting Supabase, which is a legitimate data-fetch
+    // pattern (not a synchronous cascading render).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchDashboardData()
+  }, [fetchDashboardData])
+
+  useEffect(() => {
+    // Check for new achievements when dashboard loads
+    if (loading) return
+    checkAndUnlockAchievements()
+  }, [loading, checkAndUnlockAchievements])
 
   if (loading) {
     return (

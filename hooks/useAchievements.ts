@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react'
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { ACHIEVEMENTS, AchievementStats, UserAchievement } from '@/lib/achievements/definitions'
 
@@ -18,36 +20,7 @@ export function useAchievements() {
   const [loading, setLoading] = useState(true)
   const [newlyUnlocked, setNewlyUnlocked] = useState<string[]>([])
 
-  useEffect(() => {
-    fetchAchievements()
-  }, [])
-
-  const fetchAchievements = async () => {
-    const supabase = createClient()
-    
-    try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
-
-      // Fetch unlocked achievements
-      const { data: achievements } = await supabase
-        .from('user_achievements')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('unlocked_at', { ascending: false })
-
-      setUnlockedAchievements(achievements || [])
-
-      // Fetch stats for progress tracking
-      await fetchStats(user.id)
-    } catch (error) {
-      console.error('Error fetching achievements:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const fetchStats = async (userId: string) => {
+  const fetchStats = useCallback(async (userId: string) => {
     const supabase = createClient()
 
     try {
@@ -99,11 +72,44 @@ export function useAchievements() {
     } catch (error) {
       console.error('Error fetching stats:', error)
     }
-  }
+  }, [])
 
-  const checkAndUnlockAchievements = async () => {
+  const fetchAchievements = useCallback(async () => {
     const supabase = createClient()
-    
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      // Fetch unlocked achievements
+      const { data: achievements } = await supabase
+        .from('user_achievements')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('unlocked_at', { ascending: false })
+
+      setUnlockedAchievements(achievements || [])
+
+      // Fetch stats for progress tracking
+      await fetchStats(user.id)
+    } catch (error) {
+      console.error('Error fetching achievements:', error)
+    } finally {
+      setLoading(false)
+    }
+  }, [fetchStats])
+
+  useEffect(() => {
+    // Initial data fetch on mount. setState calls happen inside an async
+    // callback after awaiting Supabase, which is a legitimate data-fetch
+    // pattern (not a synchronous cascading render).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchAchievements()
+  }, [fetchAchievements])
+
+  const checkAndUnlockAchievements = useCallback(async () => {
+    const supabase = createClient()
+
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return []
@@ -117,7 +123,7 @@ export function useAchievements() {
 
       // The function returns an array of newly unlocked achievement IDs
       const newUnlocks = data?.[0]?.newly_unlocked || []
-      
+
       if (newUnlocks.length > 0) {
         setNewlyUnlocked(newUnlocks)
         // Refresh achievements
@@ -125,18 +131,19 @@ export function useAchievements() {
       }
 
       return newUnlocks
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Log detailed error information for debugging
+      const err = error as { message?: string; details?: string; hint?: string; code?: string }
       console.error('Error checking achievements:', {
-        message: error?.message,
-        details: error?.details,
-        hint: error?.hint,
-        code: error?.code,
+        message: err?.message,
+        details: err?.details,
+        hint: err?.hint,
+        code: err?.code,
         error: error
       })
       return []
     }
-  }
+  }, [fetchAchievements])
 
   const clearNewlyUnlocked = () => {
     setNewlyUnlocked([])
@@ -146,7 +153,7 @@ export function useAchievements() {
     return ACHIEVEMENTS.map(achievement => {
       const unlocked = unlockedAchievements.find(ua => ua.achievement_id === achievement.id)
       const progress = achievement.checkProgress(stats)
-      
+
       return {
         ...achievement,
         unlocked: !!unlocked,

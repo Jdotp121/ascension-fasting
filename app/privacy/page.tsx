@@ -21,7 +21,7 @@ export default function PrivacyPolicyPage() {
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mb-3">1. Introduction</h2>
               <p className="text-gray-700 leading-relaxed">
-                Welcome to Ascension Fasting ("we," "our," or "us"). We are committed to protecting your privacy 
+                Welcome to Ascension Fasting (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). We are committed to protecting your privacy 
                 and ensuring the security of your personal information. This Privacy Policy explains how we collect, 
                 use, disclose, and safeguard your information when you use our mobile application and related services.
               </p>
@@ -109,7 +109,7 @@ export default function PrivacyPolicyPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-3">8. Children's Privacy</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-3">8. Children&apos;s Privacy</h2>
               <p className="text-gray-700 leading-relaxed">
                 Our service is not intended for users under 18 years of age. We do not knowingly collect 
                 personal information from children under 18. If you become aware that a child has provided 
@@ -121,7 +121,7 @@ export default function PrivacyPolicyPage() {
               <h2 className="text-2xl font-semibold text-gray-900 mb-3">9. Changes to This Privacy Policy</h2>
               <p className="text-gray-700 leading-relaxed">
                 We may update this Privacy Policy from time to time. We will notify you of any changes by 
-                posting the new Privacy Policy on this page and updating the "Last Updated" date.
+                posting the new Privacy Policy on this page and updating the &quot;Last Updated&quot; date.
               </p>
             </section>
 

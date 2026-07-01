@@ -16,7 +16,7 @@ export default function SupportPage() {
         <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8 lg:p-12">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Support</h1>
           <p className="text-lg text-gray-600 mb-8">
-            We're here to help! Get assistance with Ascension Fasting.
+            We&apos;re here to help! Get assistance with Ascension Fasting.
           </p>
 
           <div className="space-y-6">
@@ -29,7 +29,7 @@ export default function SupportPage() {
                 <div className="flex-1">
                   <h2 className="text-xl font-semibold text-gray-900 mb-2">Contact Support</h2>
                   <p className="text-gray-700 mb-4">
-                    Have a question or need help? Email our support team and we'll get back to you within 24-48 hours.
+                    Have a question or need help? Email our support team and we&apos;ll get back to you within 24-48 hours.
                   </p>
                   <a 
                     href="mailto:support@ascensionfasting.com"
@@ -55,7 +55,7 @@ export default function SupportPage() {
                       <h3 className="font-semibold text-gray-900 mb-1">How do I start a fast?</h3>
                       <p className="text-gray-700 text-sm">
                         Go to the Fast page, select your fast type (water, juice, or intermittent), 
-                        choose your duration, and tap "Start Fast". Your timer will begin immediately.
+                        choose your duration, and tap &quot;Start Fast&quot;. Your timer will begin immediately.
                       </p>
                     </div>
 
@@ -119,7 +119,7 @@ export default function SupportPage() {
                 <div className="flex-1">
                   <h2 className="text-xl font-semibold text-gray-900 mb-2">Feature Requests & Feedback</h2>
                   <p className="text-gray-700 mb-4">
-                    Have an idea for a new feature or want to share feedback? We'd love to hear from you!
+                    Have an idea for a new feature or want to share feedback? We&apos;d love to hear from you!
                   </p>
                   <a 
                     href="mailto:feedback@ascensionfasting.com"

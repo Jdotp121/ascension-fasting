@@ -266,7 +266,7 @@ export function ActiveFastTimer({ fast, onEndFast }: ActiveFastTimerProps) {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-gray-600">
-                You've been fasting for {formatDuration(elapsedHours)}. Are you sure you want to end your fast?
+                You&apos;ve been fasting for {formatDuration(elapsedHours)}. Are you sure you want to end your fast?
               </p>
               
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">

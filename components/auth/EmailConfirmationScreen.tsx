@@ -30,7 +30,7 @@ export function EmailConfirmationScreen({ email }: EmailConfirmationScreenProps)
                 <Mail className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
                   <p className="text-sm text-blue-900 leading-relaxed">
-                    We've sent a confirmation email to:
+                    We&apos;ve sent a confirmation email to:
                   </p>
                   <p className="font-semibold text-blue-900 mt-1 break-all">
                     {email}
@@ -45,7 +45,7 @@ export function EmailConfirmationScreen({ email }: EmailConfirmationScreenProps)
             {/* Troubleshooting Tips */}
             <div className="bg-gray-50 rounded-lg p-4">
               <p className="text-sm font-medium text-gray-900 mb-2">
-                If you don't see the email:
+                If you don&apos;t see the email:
               </p>
               <ul className="text-sm text-gray-700 space-y-1">
                 <li className="flex items-start gap-2">

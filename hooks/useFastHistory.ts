@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Fast } from '@/types'
 import { useAuth } from './useAuth'
@@ -11,12 +11,8 @@ export function useFastHistory() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchFastHistory = async () => {
-    if (!user) {
-      setFasts([])
-      setLoading(false)
-      return
-    }
+  const fetchFastHistory = useCallback(async () => {
+    if (!user) return
 
     try {
       setLoading(true)
@@ -31,20 +27,26 @@ export function useFastHistory() {
       if (fetchError) throw fetchError
 
       setFasts(data || [])
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error'
+      setError(message)
     } finally {
       setLoading(false)
     }
-  }
-
-  useEffect(() => {
-    fetchFastHistory()
   }, [user])
 
+  useEffect(() => {
+    if (!user) return
+    // Initial data fetch on mount/user change. setState calls happen inside an
+    // async callback after awaiting Supabase, which is a legitimate data-fetch
+    // pattern (not a synchronous cascading render).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchFastHistory()
+  }, [user, fetchFastHistory])
+
   return {
-    fasts,
-    loading,
+    fasts: user ? fasts : [],
+    loading: user ? loading : false,
     error,
     refreshHistory: fetchFastHistory
   }

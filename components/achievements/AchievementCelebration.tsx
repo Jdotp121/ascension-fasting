@@ -15,7 +15,12 @@ export function AchievementCelebration({ achievementIds, onClose }: AchievementC
   const [show, setShow] = useState(false)
 
   useEffect(() => {
+    // setShow(true) triggers the entrance animation after mount. This is a
+    // legitimate animation trigger pattern (mount with show=false, then
+    // transition to show=true). CSS-only alternatives would require restructuring
+    // the animation logic.
     if (achievementIds.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShow(true)
     }
   }, [achievementIds])

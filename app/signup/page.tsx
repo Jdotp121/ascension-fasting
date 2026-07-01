@@ -50,8 +50,9 @@ export default function SignUpPage() {
         setConfirmedEmail(email)
         setShowConfirmation(true)
       }
-    } catch (err: any) {
-      setError(err.message || 'An error occurred during sign up')
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'An error occurred during sign up'
+      setError(message)
     } finally {
       setLoading(false)
     }

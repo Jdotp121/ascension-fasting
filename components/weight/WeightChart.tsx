@@ -15,6 +15,11 @@ export function WeightChart({ weightEntries, goalWeight }: WeightChartProps) {
   const [mounted, setMounted] = useState(false)
   
   useEffect(() => {
+
+  // Chart libraries (recharts ResponsiveContainer) require DOM measurements that
+  // only exist on the client. This defers chart rendering until after hydration
+  // to avoid hydration mismatches. This is a legitimate client-only render case.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true)
   }, [])
 
@@ -184,7 +189,7 @@ export function WeightChart({ weightEntries, goalWeight }: WeightChartProps) {
                     color: '#8b5cf6',
                     fontWeight: '600'
                   }}
-                  formatter={(value: any) => [`${value.toFixed(1)} kg`, 'Weight']}
+                  formatter={(value) => [`${Number(value).toFixed(1)} kg`, 'Weight']}
                 />
                 
                 {/* Goal weight reference line */}

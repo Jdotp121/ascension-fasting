@@ -21,7 +21,7 @@ export default function TermsOfServicePage() {
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mb-3">1. Acceptance of Terms</h2>
               <p className="text-gray-700 leading-relaxed">
-                By accessing and using Ascension Fasting ("the App"), you accept and agree to be bound by these 
+                By accessing and using Ascension Fasting (&quot;the App&quot;), you accept and agree to be bound by these 
                 Terms of Service. If you do not agree to these terms, please do not use the App.
               </p>
             </section>
@@ -78,7 +78,7 @@ export default function TermsOfServicePage() {
               <ul className="list-disc pl-6 text-gray-700 space-y-2">
                 <li>Use the App for any illegal purpose</li>
                 <li>Attempt to gain unauthorized access to our systems</li>
-                <li>Interfere with or disrupt the App's functionality</li>
+                <li>Interfere with or disrupt the App&apos;s functionality</li>
                 <li>Upload malicious code or harmful content</li>
                 <li>Misrepresent your identity or affiliation</li>
                 <li>Use the App to provide medical advice to others</li>
@@ -107,7 +107,7 @@ export default function TermsOfServicePage() {
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mb-3">8. Disclaimer of Warranties</h2>
               <p className="text-gray-700 leading-relaxed">
-                THE APP IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS 
+                THE APP IS PROVIDED &quot;AS IS&quot; AND &quot;AS AVAILABLE&quot; WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS 
                 OR IMPLIED. WE DO NOT WARRANT THAT THE APP WILL BE UNINTERRUPTED, ERROR-FREE, OR FREE OF 
                 VIRUSES OR OTHER HARMFUL COMPONENTS.
               </p>
@@ -138,7 +138,7 @@ export default function TermsOfServicePage() {
               <h2 className="text-2xl font-semibold text-gray-900 mb-3">11. Changes to Terms</h2>
               <p className="text-gray-700 leading-relaxed">
                 We may modify these Terms at any time. We will notify users of any material changes by updating 
-                the "Last Updated" date. Your continued use of the App after such changes constitutes acceptance 
+                the &quot;Last Updated&quot; date. Your continued use of the App after such changes constitutes acceptance 
                 of the new Terms.
               </p>
             </section>

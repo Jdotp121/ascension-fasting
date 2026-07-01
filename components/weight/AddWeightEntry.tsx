@@ -35,8 +35,9 @@ export function AddWeightEntry({ onAdd }: AddWeightEntryProps) {
       setWeight('')
       setDate(new Date().toISOString().split('T')[0])
       setIsOpen(false)
-    } catch (err: any) {
-      setError(err.message || 'Failed to add weight entry')
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to add weight entry'
+      setError(message)
     } finally {
       setLoading(false)
     }

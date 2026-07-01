@@ -73,9 +73,10 @@ export default function DeleteAccountPage() {
       // Redirect to confirmation page
       alert('Account deletion request received. Your data has been removed and you have been logged out. Please contact support@ascensionfasting.com to complete account deletion.')
       router.push('/')
-    } catch (err: any) {
-      console.error('Error deleting account:', err)
-      setError(err.message || 'Failed to delete account. Please contact support.')
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to delete account. Please contact support.'
+      console.error('Error deleting account:', message)
+      setError(message)
     } finally {
       setDeleting(false)
     }

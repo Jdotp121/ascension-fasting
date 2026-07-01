@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { UserProfile } from '@/types'
 
@@ -17,15 +17,15 @@ export function useProfile() {
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const supabase = createClient()
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
 
+      const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-      
+
       if (!user) {
         throw new Error('No authenticated user')
       }
@@ -45,12 +45,13 @@ export function useProfile() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
-  const updateProfile = async (updates: UpdateProfileData): Promise<{ success: boolean; error?: string }> => {
+  const updateProfile = useCallback(async (updates: UpdateProfileData): Promise<{ success: boolean; error?: string }> => {
     try {
+      const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-      
+
       if (!user) {
         return { success: false, error: 'No authenticated user' }
       }
@@ -70,11 +71,15 @@ export function useProfile() {
       const errorMessage = err instanceof Error ? err.message : 'Failed to update profile'
       return { success: false, error: errorMessage }
     }
-  }
+  }, [fetchProfile])
 
   useEffect(() => {
+    // Initial data fetch on mount. setState calls happen inside an async
+    // callback after awaiting Supabase, which is a legitimate data-fetch
+    // pattern (not a synchronous cascading render).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchProfile()
-  }, [])
+  }, [fetchProfile])
 
   return {
     profile,

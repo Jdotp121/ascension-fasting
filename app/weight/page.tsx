@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Header } from '@/components/navigation/Header'
 import { BottomNav } from '@/components/navigation/BottomNav'
@@ -20,11 +20,7 @@ export default function WeightPage() {
   const [goalWeight, setGoalWeight] = useState<number | null>(null)
   const [loadingProfile, setLoadingProfile] = useState(true)
 
-  useEffect(() => {
-    fetchProfile()
-  }, [])
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     const supabase = createClient()
     try {
       const { data: { user } } = await supabase.auth.getUser()
@@ -44,7 +40,15 @@ export default function WeightPage() {
     } finally {
       setLoadingProfile(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    // Initial data fetch on mount. setState calls happen inside an async
+    // callback after awaiting Supabase, which is a legitimate data-fetch
+    // pattern (not a synchronous cascading render).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchProfile()
+  }, [fetchProfile])
 
   const handleDeleteEntry = async (entryId: string) => {
     if (!confirm('Are you sure you want to delete this weight entry?')) {

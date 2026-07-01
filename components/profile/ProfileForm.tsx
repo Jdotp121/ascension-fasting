@@ -36,8 +36,11 @@ export function ProfileForm({ profile, onSave }: ProfileFormProps) {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  // Update form data when profile changes
+  // Sync form state when the profile prop changes (e.g. after a refetch).
+  // This is a legitimate prop-to-state sync pattern; deriving the form from
+  // props on every render would lose user input.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFormData({
       name: profile.name,
       age: profile.age,
@@ -104,7 +107,7 @@ export function ProfileForm({ profile, onSave }: ProfileFormProps) {
     }
   }
 
-  const handleInputChange = (field: keyof ProfileFormData, value: any) => {
+  const handleInputChange = (field: keyof ProfileFormData, value: string | number | null) => {
     setFormData(prev => ({ ...prev, [field]: value }))
     // Clear error for this field
     if (errors[field]) {

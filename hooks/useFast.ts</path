@@ -13,11 +13,7 @@ export function useFast() {
 
   // Fetch active fast
   const fetchActiveFast = useCallback(async () => {
-    if (!user) {
-      setActiveFast(null)
-      setLoading(false)
-      return
-    }
+    if (!user) return
 
     try {
       const supabase = createClient()
@@ -49,12 +45,9 @@ export function useFast() {
   }, [user])
 
   useEffect(() => {
-    // Initial data fetch on mount/user change. setState calls happen inside an
-    // async callback after awaiting Supabase, which is a legitimate data-fetch
-    // pattern (not a synchronous cascading render).
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (!user) return
     fetchActiveFast()
-  }, [fetchActiveFast])
+  }, [user, fetchActiveFast])
 
   // Start a new fast
   const startFast = async (fastType: FastType, durationHours: number) => {
@@ -136,8 +129,8 @@ export function useFast() {
   }
 
   return {
-    activeFast,
-    loading,
+    activeFast: user ? activeFast : null,
+    loading: user ? loading : false,
     error,
     startFast,
     endFast,

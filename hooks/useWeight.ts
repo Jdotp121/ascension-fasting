@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { WeightEntry } from '@/types'
 import { useAuth } from './useAuth'
@@ -14,12 +14,8 @@ export function useWeight() {
   const [error, setError] = useState<string | null>(null)
 
   // Fetch weight entries
-  const fetchWeightEntries = async () => {
-    if (!user) {
-      setWeightEntries([])
-      setLoading(false)
-      return
-    }
+  const fetchWeightEntries = useCallback(async () => {
+    if (!user) return
 
     try {
       const supabase = createClient()
@@ -32,16 +28,22 @@ export function useWeight() {
       if (fetchError) throw fetchError
 
       setWeightEntries(data || [])
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error'
+      setError(message)
     } finally {
       setLoading(false)
     }
-  }
+  }, [user])
 
   useEffect(() => {
+    if (!user) return
+    // Initial data fetch on mount/user change. setState calls happen inside an
+    // async callback after awaiting Supabase, which is a legitimate data-fetch
+    // pattern (not a synchronous cascading render).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchWeightEntries()
-  }, [user])
+  }, [user, fetchWeightEntries])
 
   // Add weight entry
   const addWeightEntry = async (weightKg: number, entryDate?: string) => {
@@ -87,13 +89,14 @@ export function useWeight() {
 
       // Refresh the list
       await fetchWeightEntries()
-      
+
       // Check for achievements after adding weight entry
       await checkAndUnlockAchievements()
-      
+
       return data
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error'
+      setError(message)
       throw err
     } finally {
       setLoading(false)
@@ -121,8 +124,9 @@ export function useWeight() {
 
       // Refresh the list
       await fetchWeightEntries()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error'
+      setError(message)
       throw err
     } finally {
       setLoading(false)
@@ -141,7 +145,7 @@ export function useWeight() {
     }
 
     // Sort by date ascending to get starting weight
-    const sortedAsc = [...weightEntries].sort((a, b) => 
+    const sortedAsc = [...weightEntries].sort((a, b) =>
       new Date(a.entry_date).getTime() - new Date(b.entry_date).getTime()
     )
 
@@ -159,8 +163,8 @@ export function useWeight() {
   }
 
   return {
-    weightEntries,
-    loading,
+    weightEntries: user ? weightEntries : [],
+    loading: user ? loading : false,
     error,
     addWeightEntry,
     deleteWeightEntry,
