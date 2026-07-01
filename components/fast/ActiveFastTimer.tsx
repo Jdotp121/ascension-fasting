@@ -80,7 +80,7 @@ export function ActiveFastTimer({ fast, onEndFast }: ActiveFastTimerProps) {
               </span>
             </div>
             
-            <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-2 font-mono max-w-full overflow-hidden break-all leading-tight">
+            <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-2 font-mono whitespace-nowrap overflow-x-auto px-2 -mx-2">
               {formatDetailedDuration(elapsedHours)}
             </div>
             

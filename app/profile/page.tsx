@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Header } from '@/components/navigation/Header'
 import { BottomNav } from '@/components/navigation/BottomNav'
 import { AppPageLayout } from '@/components/layout/AppPageLayout'
@@ -9,7 +10,7 @@ import { Button } from '@/components/ui/Button'
 import { ProfileForm } from '@/components/profile/ProfileForm'
 import { useProfile } from '@/hooks/useProfile'
 import { createClient } from '@/lib/supabase/client'
-import { LogOut, Loader2 } from 'lucide-react'
+import { LogOut, Loader2, Trash2, ExternalLink } from 'lucide-react'
 import { useState } from 'react'
 
 export default function ProfilePage() {
@@ -65,32 +66,74 @@ export default function ProfilePage() {
         <div className="space-y-6">
           <ProfileForm profile={profile} onSave={updateProfile} />
 
-          {/* Logout Section */}
+          {/* Account Actions */}
           <Card>
             <CardContent className="py-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900">Logout</h3>
-                  <p className="text-sm text-gray-600 mt-1">Sign out of your account</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Account Actions</h3>
+              <div className="space-y-4">
+                {/* Logout */}
+                <div className="flex items-center justify-between pb-4 border-b border-gray-200">
+                  <div>
+                    <h4 className="font-medium text-gray-900">Logout</h4>
+                    <p className="text-sm text-gray-600 mt-1">Sign out of your account</p>
+                  </div>
+                  <Button
+                    onClick={handleLogout}
+                    disabled={loggingOut}
+                    variant="secondary"
+                    className="bg-red-50 text-red-700 hover:bg-red-100 border-red-200"
+                  >
+                    {loggingOut ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Logging out...
+                      </>
+                    ) : (
+                      <>
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Logout
+                      </>
+                    )}
+                  </Button>
                 </div>
-                <Button
-                  onClick={handleLogout}
-                  disabled={loggingOut}
-                  variant="secondary"
-                  className="bg-red-50 text-red-700 hover:bg-red-100 border-red-200"
-                >
-                  {loggingOut ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Logging out...
-                    </>
-                  ) : (
-                    <>
-                      <LogOut className="w-4 h-4 mr-2" />
-                      Logout
-                    </>
-                  )}
-                </Button>
+
+                {/* Delete Account */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium text-gray-900">Delete Account</h4>
+                    <p className="text-sm text-gray-600 mt-1">Permanently delete your account and all data</p>
+                  </div>
+                  <Link href="/delete-account">
+                    <Button
+                      variant="outline"
+                      className="border-red-300 text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete Account
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Help & Support */}
+          <Card>
+            <CardContent className="py-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Help & Support</h3>
+              <div className="space-y-3 text-sm">
+                <Link href="/support" className="flex items-center text-blue-600 hover:underline">
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Support Center
+                </Link>
+                <Link href="/privacy" className="flex items-center text-blue-600 hover:underline">
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Privacy Policy
+                </Link>
+                <Link href="/terms" className="flex items-center text-blue-600 hover:underline">
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Terms of Service
+                </Link>
               </div>
             </CardContent>
           </Card>

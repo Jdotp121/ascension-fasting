@@ -43,6 +43,7 @@ export default function SignUpPage() {
       // If session is null, email confirmation is required
       if (data.session) {
         // Session exists - email confirmation disabled, proceed to onboarding
+        // New users always start with onboarding
         router.push('/onboarding')
       } else {
         // Email confirmation required - show confirmation screen

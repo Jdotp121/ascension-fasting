@@ -24,6 +24,7 @@ export interface Database {
           current_weight_kg: number | null
           goal_weight_kg: number | null
           main_goal: MainGoal | null
+          onboarding_completed: boolean
           created_at: string
           updated_at: string
         }
@@ -37,6 +38,7 @@ export interface Database {
           current_weight_kg?: number | null
           goal_weight_kg?: number | null
           main_goal?: MainGoal | null
+          onboarding_completed?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -50,6 +52,7 @@ export interface Database {
           current_weight_kg?: number | null
           goal_weight_kg?: number | null
           main_goal?: MainGoal | null
+          onboarding_completed?: boolean
           created_at?: string
           updated_at?: string
         }

@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { AlertCircle } from 'lucide-react'
 
 export function Footer() {
@@ -16,6 +17,23 @@ export function Footer() {
             </p>
           </div>
         </div>
+        
+        {/* Policy Links */}
+        <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mb-4 text-sm">
+          <Link href="/privacy" className="text-gray-600 hover:text-gray-900 hover:underline">
+            Privacy Policy
+          </Link>
+          <Link href="/terms" className="text-gray-600 hover:text-gray-900 hover:underline">
+            Terms of Service
+          </Link>
+          <Link href="/support" className="text-gray-600 hover:text-gray-900 hover:underline">
+            Support
+          </Link>
+          <Link href="/delete-account" className="text-gray-600 hover:text-gray-900 hover:underline">
+            Delete Account
+          </Link>
+        </div>
+        
         <div className="text-center text-sm text-gray-600">
           <p>&copy; 2026 Ascension Fasting. Part of the Ascension Ecosystem.</p>
         </div>

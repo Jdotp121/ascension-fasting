@@ -31,7 +31,18 @@ export default function LoginPage() {
       if (signInError) throw signInError
 
       if (data.user) {
-        router.push('/dashboard')
+        // Check if user has completed onboarding
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('onboarding_completed')
+          .eq('id', data.user.id)
+          .single()
+
+        if (profile?.onboarding_completed === false) {
+          router.push('/onboarding')
+        } else {
+          router.push('/dashboard')
+        }
       }
     } catch (err: any) {
       setError(err.message || 'Invalid email or password')

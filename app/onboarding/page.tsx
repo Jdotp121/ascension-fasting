@@ -4,209 +4,243 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Select } from '@/components/ui/Select'
-import { MainGoal, Sex } from '@/types'
-import { AlertCircle } from 'lucide-react'
+import { Card } from '@/components/ui/Card'
+import { Sparkles, Clock, Target, TrendingUp, AlertCircle } from 'lucide-react'
+
+interface OnboardingScreen {
+  id: number
+  title: string
+  description: string
+  icon: React.ReactNode
+}
+
+const screens: OnboardingScreen[] = [
+  {
+    id: 1,
+    title: 'Welcome to Ascension Fasting',
+    description: 'Track your fasts, understand your fasting stage, and follow your progress toward your health goals.',
+    icon: <Sparkles className="w-16 h-16 text-blue-600" />,
+  },
+  {
+    id: 2,
+    title: 'Choose Your Fasting Style',
+    description: 'Start a water fast, juice fast, or intermittent fast with preset and custom durations.',
+    icon: <Clock className="w-16 h-16 text-purple-600" />,
+  },
+  {
+    id: 3,
+    title: 'Set Your Weight Goal',
+    description: 'Add your current weight and goal weight in Profile under Health Goals so Ascension can track your progress clearly.',
+    icon: <Target className="w-16 h-16 text-green-600" />,
+  },
+  {
+    id: 4,
+    title: 'Track Your Journey',
+    description: 'Log your weight, view your fasting history, and watch your progress build over time.',
+    icon: <TrendingUp className="w-16 h-16 text-orange-600" />,
+  },
+  {
+    id: 5,
+    title: 'Important Note',
+    description: 'Ascension Fasting is for tracking and educational purposes only. It does not provide medical advice. Please consult a qualified healthcare professional before beginning extended fasting, especially if you have a medical condition, are pregnant, under 18, or taking medication.',
+    icon: <AlertCircle className="w-16 h-16 text-amber-600" />,
+  },
+]
 
 export default function OnboardingPage() {
   const router = useRouter()
+  const [currentScreen, setCurrentScreen] = useState(0)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [userId, setUserId] = useState<string | null>(null)
-  
-  const [formData, setFormData] = useState({
-    age: '',
-    sex: '' as Sex | '',
-    height_cm: '',
-    current_weight_kg: '',
-    goal_weight_kg: '',
-    main_goal: '' as MainGoal | '',
-  })
 
   useEffect(() => {
-    const getUser = async () => {
+    const checkUser = async () => {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        setUserId(user.id)
-      } else {
+      
+      if (!user) {
         router.push('/login')
+        return
+      }
+      
+      setUserId(user.id)
+
+      // Check if user has already completed onboarding
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('id', user.id)
+        .single()
+
+      if (profile?.onboarding_completed) {
+        router.push('/dashboard')
       }
     }
-    getUser()
+    
+    checkUser()
   }, [router])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-
-    if (!userId) {
-      setError('User not authenticated')
-      setLoading(false)
-      return
+  const handleNext = () => {
+    if (currentScreen < screens.length - 1) {
+      setCurrentScreen(currentScreen + 1)
     }
+  }
 
+  const handleBack = () => {
+    if (currentScreen > 0) {
+      setCurrentScreen(currentScreen - 1)
+    }
+  }
+
+  const handleComplete = async () => {
+    if (!userId) return
+    
+    setLoading(true)
     const supabase = createClient()
 
     try {
-      const { error: updateError } = await supabase
+      const { error } = await supabase
         .from('profiles')
-        .update({
-          age: formData.age ? Number.parseInt(formData.age) : null,
-          sex: formData.sex || null,
-          height_cm: formData.height_cm ? Number.parseFloat(formData.height_cm) : null,
-          current_weight_kg: formData.current_weight_kg ? Number.parseFloat(formData.current_weight_kg) : null,
-          goal_weight_kg: formData.goal_weight_kg ? Number.parseFloat(formData.goal_weight_kg) : null,
-          main_goal: formData.main_goal || null,
-        })
+        .update({ onboarding_completed: true })
         .eq('id', userId)
 
-      if (updateError) throw updateError
+      if (error) throw error
 
-      // Redirect to dashboard
       router.push('/dashboard')
-    } catch (err: any) {
-      setError(err.message || 'Failed to save profile')
+    } catch (err) {
+      console.error('Error completing onboarding:', err)
+      // Still redirect to dashboard even if there's an error
+      router.push('/dashboard')
     } finally {
       setLoading(false)
     }
   }
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+  const handleSkip = async () => {
+    await handleComplete()
+  }
+
+  const screen = screens[currentScreen]
+  const isLastScreen = currentScreen === screens.length - 1
+  const isFirstScreen = currentScreen === 0
+
+  const getProgressDotClassName = (index: number): string => {
+    const baseClasses = 'h-2 rounded-full transition-all duration-300'
+    
+    if (index === currentScreen) {
+      return `${baseClasses} w-8 bg-blue-600`
+    }
+    
+    if (index < currentScreen) {
+      return `${baseClasses} w-2 bg-blue-400`
+    }
+    
+    return `${baseClasses} w-2 bg-gray-300`
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
-      <div className="max-w-2xl w-full space-y-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">Complete Your Profile</h1>
-          <p className="mt-2 text-sm text-gray-600">
-            Help us personalize your fasting experience
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center px-4 py-8">
+      <div className="max-w-2xl w-full">
+        {/* Progress Indicator */}
+        <div className="mb-8">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            {screens.map((screen, index) => (
+              <div
+                key={screen.id}
+                className={getProgressDotClassName(index)}
+              />
+            ))}
+          </div>
+          <p className="text-center text-sm text-gray-600">
+            Step {currentScreen + 1} of {screens.length}
           </p>
         </div>
 
-        {/* Health Disclaimer */}
-        <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
-          <div className="flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="text-sm font-semibold text-amber-900 mb-1">Health Disclaimer</p>
-              <p className="text-sm text-amber-800 leading-relaxed">
-                Ascension Fasting is for general wellness tracking only and does not provide medical advice, 
-                diagnosis, or treatment. Speak to a qualified health professional before fasting, especially 
-                if you have a medical condition, are pregnant, under 18, or taking medication.
-              </p>
+        {/* Main Content Card */}
+        <Card className="bg-white shadow-xl border-0 overflow-hidden">
+          <div className="p-8 md:p-12">
+            {/* Icon */}
+            <div className="flex justify-center mb-6">
+              {screen.icon}
             </div>
-          </div>
-        </div>
 
-        <form onSubmit={handleSubmit} className="mt-8 bg-white p-8 rounded-lg shadow-md space-y-6">
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-              {error}
-            </div>
-          )}
+            {/* Title */}
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-4">
+              {screen.title}
+            </h1>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input
-              label="Age"
-              type="number"
-              id="age"
-              value={formData.age}
-              onChange={(e) => handleInputChange('age', e.target.value)}
-              placeholder="25"
-              min="1"
-              max="150"
-            />
+            {/* Description */}
+            <p className="text-base md:text-lg text-gray-700 text-center leading-relaxed max-w-xl mx-auto">
+              {screen.description}
+            </p>
 
-            <Select
-              label="Sex"
-              id="sex"
-              value={formData.sex}
-              onChange={(e) => handleInputChange('sex', e.target.value)}
-              options={[
-                { value: '', label: 'Select...' },
-                { value: 'male', label: 'Male' },
-                { value: 'female', label: 'Female' },
-                { value: 'other', label: 'Other' },
-                { value: 'prefer_not_to_say', label: 'Prefer not to say' },
-              ]}
-            />
-
-            <Input
-              label="Height (cm)"
-              type="number"
-              id="height_cm"
-              value={formData.height_cm}
-              onChange={(e) => handleInputChange('height_cm', e.target.value)}
-              placeholder="175"
-              step="0.1"
-              min="1"
-            />
-
-            <Input
-              label="Current Weight (kg)"
-              type="number"
-              id="current_weight_kg"
-              value={formData.current_weight_kg}
-              onChange={(e) => handleInputChange('current_weight_kg', e.target.value)}
-              placeholder="75.0"
-              step="0.1"
-              min="1"
-              required
-            />
-
-            <Input
-              label="Goal Weight (kg)"
-              type="number"
-              id="goal_weight_kg"
-              value={formData.goal_weight_kg}
-              onChange={(e) => handleInputChange('goal_weight_kg', e.target.value)}
-              placeholder="70.0"
-              step="0.1"
-              min="1"
-              required
-            />
-
-            <Select
-              label="Main Goal"
-              id="main_goal"
-              value={formData.main_goal}
-              onChange={(e) => handleInputChange('main_goal', e.target.value)}
-              options={[
-                { value: '', label: 'Select your main goal...' },
-                { value: 'weight_loss', label: 'Weight Loss' },
-                { value: 'health', label: 'Health & Wellness' },
-                { value: 'discipline', label: 'Discipline & Mental Clarity' },
-                { value: 'religious', label: 'Religious/Spiritual' },
-                { value: 'longevity', label: 'Longevity' },
-              ]}
-              required
-            />
+            {/* Special styling for disclaimer screen */}
+            {screen.id === 5 && (
+              <div className="mt-6 p-4 bg-amber-50 border-2 border-amber-200 rounded-lg">
+                <p className="text-sm text-amber-900 text-center font-medium">
+                  By continuing, you acknowledge that you understand this is a tracking tool only.
+                </p>
+              </div>
+            )}
           </div>
 
-          <div className="flex gap-4 pt-4">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => router.push('/dashboard')}
-              className="flex-1"
-            >
-              Skip for now
-            </Button>
-            <Button
-              type="submit"
-              className="flex-1"
-              size="lg"
-              isLoading={loading}
-            >
-              Complete Profile
-            </Button>
+          {/* Navigation Buttons */}
+          <div className="bg-gray-50 px-8 py-6 flex flex-col sm:flex-row gap-3">
+            {/* Skip Button - Only show on non-last screens */}
+            {!isLastScreen && (
+              <Button
+                onClick={handleSkip}
+                variant="ghost"
+                size="lg"
+                className="sm:order-1"
+                disabled={loading}
+              >
+                Skip
+              </Button>
+            )}
+
+            {/* Back Button - Show after first screen */}
+            {!isFirstScreen && (
+              <Button
+                onClick={handleBack}
+                variant="outline"
+                size="lg"
+                className="sm:order-2"
+                disabled={loading}
+              >
+                Back
+              </Button>
+            )}
+
+            {/* Next/Get Started Button */}
+            {isLastScreen ? (
+              <Button
+                onClick={handleComplete}
+                variant="primary"
+                size="lg"
+                className="sm:order-3 sm:ml-auto"
+                isLoading={loading}
+              >
+                Get Started
+              </Button>
+            ) : (
+              <Button
+                onClick={handleNext}
+                variant="primary"
+                size="lg"
+                className="sm:order-3 sm:ml-auto"
+                disabled={loading}
+              >
+                Next
+              </Button>
+            )}
           </div>
-        </form>
+        </Card>
+
+        {/* App Name Footer */}
+        <p className="text-center mt-6 text-sm text-gray-600">
+          Ascension Fasting
+        </p>
       </div>
     </div>
   )
