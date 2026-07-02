@@ -10,12 +10,13 @@ import { AppPageLayout } from '@/components/layout/AppPageLayout'
 import { AchievementsCard } from '@/components/achievements/AchievementsCard'
 import { AchievementCelebration } from '@/components/achievements/AchievementCelebration'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
-import { Timer, Scale, TrendingDown, Award, Target, Flame, AlertCircle } from 'lucide-react'
+import { Scale, TrendingDown, Award, Target, Flame, AlertCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { DashboardStats } from '@/types'
 import { useWeight } from '@/hooks/useWeight'
 import { useAchievements } from '@/hooks/useAchievements'
 import { WeightProgressCard } from '@/components/weight/WeightProgressCard'
+import { ActiveFastSummaryCard } from '@/components/dashboard/ActiveFastSummaryCard'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -150,44 +151,7 @@ export default function DashboardPage() {
         )}
 
         {/* Active Fast Card */}
-        {stats.activeFast ? (
-          <Card className="mb-6 bg-gradient-to-r from-blue-50 to-blue-100 border-2 border-blue-200">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-blue-900">
-                <Timer className="w-6 h-6" />
-                Active Fast in Progress
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-sm text-blue-700">Type: {stats.activeFast.fast_type}</p>
-                  <p className="text-sm text-blue-700 mt-1">
-                    Started: {new Date(stats.activeFast.start_time).toLocaleString()}
-                  </p>
-                </div>
-                <Button onClick={() => router.push('/fast')} variant="primary">
-                  View Fast
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Timer className="w-6 h-6" />
-                No Active Fast
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 mb-4">Ready to start a new fast?</p>
-              <Button onClick={() => router.push('/fast')} variant="primary">
-                Start a Fast
-              </Button>
-            </CardContent>
-          </Card>
-        )}
+        <ActiveFastSummaryCard fast={stats.activeFast} />
 
         {/* Weight Progress Card */}
         {weightEntries.length > 0 && (
