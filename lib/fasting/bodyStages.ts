@@ -133,3 +133,33 @@ export function formatDetailedDuration(hours: number): string {
   
   return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
 }
+
+export interface StageColorInfo {
+  readonly hex: string
+  readonly bg: string
+  readonly text: string
+  readonly border: string
+}
+
+// Static Tailwind class map (must be static strings, not interpolated, so
+// Tailwind's build-time scanner picks them up).
+const STAGE_COLORS: Record<string, StageColorInfo> = {
+  blue: { hex: '#3b82f6', bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-300' },
+  indigo: { hex: '#6366f1', bg: 'bg-indigo-100', text: 'text-indigo-700', border: 'border-indigo-300' },
+  purple: { hex: '#a855f7', bg: 'bg-purple-100', text: 'text-purple-700', border: 'border-purple-300' },
+  pink: { hex: '#ec4899', bg: 'bg-pink-100', text: 'text-pink-700', border: 'border-pink-300' },
+  rose: { hex: '#f43f5e', bg: 'bg-rose-100', text: 'text-rose-700', border: 'border-rose-300' },
+}
+
+const DEFAULT_STAGE_COLOR: StageColorInfo = {
+  hex: '#6b7280',
+  bg: 'bg-gray-100',
+  text: 'text-gray-700',
+  border: 'border-gray-300',
+}
+
+/** Looks up hex + Tailwind classes for a BodyStage.color value. Falls back to gray. */
+export function getStageColorInfo(color: string): StageColorInfo {
+  return STAGE_COLORS[color] ?? DEFAULT_STAGE_COLOR
+}
+
